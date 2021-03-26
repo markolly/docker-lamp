@@ -1,0 +1,81 @@
+# Adopt version 2 syntax:
+version: '2'
+
+volumes:
+    database_data:
+        driver: local
+
+services:
+# Setup the Apache/PHP container
+###########################
+    web01:
+        build: ./docker/php/
+        image: lamp/apache-php
+        container_name: lamp-web01
+        volumes:
+            - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+        volumes:
+            - ./www:/var/www/html
+        labels:
+          - "traefik.port=80"
+          - "traefik.backend=apache-cluster"
+          - "traefik.frontend.rule=Host:apache.docker.localhost"
+    web02:
+        build: ./docker/php/
+        image: lamp/apache-php
+        container_name: lamp-web02
+        volumes:
+            - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+        volumes:
+            - ./www:/var/www/html
+        labels:
+          - "traefik.port=80"
+          - "traefik.backend=apache-cluster"
+          - "traefik.frontend.rule=Host:apache.docker.localhost"
+
+# Setup the Database (MySQL) container
+###########################
+    mysql:
+        image: mysql:5.7
+        container_name: lamp-mysql
+        volumes:
+            - database_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        labels:
+          - "traefik.enable=false"
+
+# Setup the phpmyadmin container
+###########################
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.7
+        container_name: lamp-pma
+        restart: always
+        links:
+          - mysql
+        environment:
+          MYSQL_USERNAME: root
+          MYSQL_ROOT_PASSWORD: secret
+          PMA_ARBITRARY: 1
+        labels:
+          - "traefik.port=80"
+          - "traefik.frontend.rule=Host:pma.docker.localhost"
+
+# Setup the traefik Proxy/LB container
+###########################
+    traefik:
+      image: traefik:v1.7
+      container_name: lamp-traefik
+      command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+      ports:
+        - "80:80"
+        - "8080:8080"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /dev/null:/traefik.toml
+      labels:
+        - "traefik.frontend.rule=Host:traefik.docker.localhost"
+        - "traefik.port=8080"
