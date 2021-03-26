@@ -1,5 +1,5 @@
 # LAMP for Docker
-A clustered LEMP example running on Docker. Contains 2 node Apache cluster with PHP and MySQL served by Traefik proxy/LB.
+A clustered LAMP example running on Docker. Contains 2 node Apache cluster with PHP and MySQL served by Traefik proxy/LB.
 
 ## Prerequisites
 The following software is required before running LEMP for Docker:
