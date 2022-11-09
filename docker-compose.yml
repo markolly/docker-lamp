@@ -14,7 +14,6 @@ services:
         container_name: lamp-web01
         volumes:
             - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
-        volumes:
             - ./www:/var/www/html
         labels:
           - "traefik.port=80"
@@ -26,7 +25,6 @@ services:
         container_name: lamp-web02
         volumes:
             - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
-        volumes:
             - ./www:/var/www/html
         labels:
           - "traefik.port=80"

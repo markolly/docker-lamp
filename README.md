@@ -26,10 +26,10 @@ Traefik has been set up to use name-based virtual hosting. Once the stack is up 
 -  phpMyAdmin - http://pma.docker.localhost (Server:mysql, Username:project, Password:project)
 
 ## Updating a container
-The majority of the images used in the stack are pulled straight from Docker Hub apart from the Apache container. This is built using a Dockerfile located at docker/php/Dockerfile. 
+The majority of the images used in the stack are pulled straight from Docker Hub apart from the Apache container. This is built using a Dockerfile located at docker/php/Dockerfile.
 
 ## Uninstall
-To stop all "LAMP for docker" containers and delete them run: 
+To stop all "LAMP for docker" containers and delete them run:
 ```
-$ docker-compose down 
+$ docker-compose down
 ```
